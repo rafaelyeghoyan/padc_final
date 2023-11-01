@@ -5,19 +5,24 @@ import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UserData } from './dto/logined-user-data';
 import { LoginData } from './dto/login-user-dto';
-import process from 'process';
 import * as jwt from 'jsonwebtoken';
-
+import { Task } from './entities/task.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<User>,
+    @Inject('TASK_REPOSITORY')
+    private taskRepository: Repository<Task>,
   ) {}
 
-  async findAll(): Promise<User[]> {
-    return this.userRepository.find();
+  async getTask() {
+    return await this.taskRepository.find();
+  }
+
+  async createTask(dto) {
+    return await this.taskRepository.create(dto);
   }
 
   async hashedPassword(password: string) {
@@ -32,7 +37,8 @@ export class UserService {
     return this.userRepository.save(newUser);
   }
   generateAccessToken(payload: any): string {
-    const secretKey = "00228eaad7bd7ead49b4a66f5ea4681146e970ec008d0b4dcaeccf36432599db";
+    const secretKey =
+      '00228eaad7bd7ead49b4a66f5ea4681146e970ec008d0b4dcaeccf36432599db';
     return jwt.sign(payload, secretKey);
   }
 

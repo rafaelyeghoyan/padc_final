@@ -6,9 +6,10 @@ import { UserModule } from './User Repository/user/user.module';
 import { UserService } from './User Repository/user/user.service';
 import { UserController } from './User Repository/user/user.controller';
 import { userProviders } from './User Repository/user/provider/user';
+import { taskProviders } from './User Repository/user/provider/task/task';
 @Module({
   imports: [DatabaseModule, UserModule],
   controllers: [AppController, UserController],
-  providers: [AppService, UserService, ...userProviders],
+  providers: [AppService, UserService, ...userProviders, ...taskProviders],
 })
 export class AppModule {}
