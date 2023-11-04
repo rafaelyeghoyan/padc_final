@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Task } from '../../../output/entities/task.entity';
 import { InjectRepository } from '@nestjs/typeorm';
