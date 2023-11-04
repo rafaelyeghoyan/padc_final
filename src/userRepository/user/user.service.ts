@@ -1,29 +1,18 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { User } from './entities/user.entity';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UserData } from './dto/logined-user-data';
 import { LoginData } from './dto/login-user-dto';
 import * as jwt from 'jsonwebtoken';
-import { Task } from './entities/task.entity';
+import { User } from '../../../output/entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject('USER_REPOSITORY')
+    @InjectRepository(User)
     private userRepository: Repository<User>,
-    @Inject('TASK_REPOSITORY')
-    private taskRepository: Repository<Task>,
   ) {}
-
-  async getTask() {
-    return await this.taskRepository.find();
-  }
-
-  async createTask(dto) {
-    return await this.taskRepository.create(dto);
-  }
 
   async hashedPassword(password: string) {
     const saltOrRounds = 10;
@@ -31,7 +20,7 @@ export class UserService {
     return hashedPassword;
   }
 
-  async registrationUser(dto: CreateUserDto) {
+  async registrationUser(dto) {
     dto.Password = await this.hashedPassword(dto.Password);
     const newUser = this.userRepository.create(dto);
     return this.userRepository.save(newUser);
@@ -49,22 +38,26 @@ export class UserService {
     if (loginDto) {
       const user = await this.userRepository.findOne({
         where: {
-          Email: loginDto.Email,
+          email: loginDto.Email,
         },
       });
-      if (user && (await bcrypt.compare(loginDto.Password, user.Password))) {
+      if (user && (await bcrypt.compare(loginDto.Password, user.password))) {
         const userData: UserData = new UserData();
-        userData.firstName = user.FirstName;
-        userData.lastName = user.LastName;
-        userData.userName = user.UserName;
-        userData.phone = user.Phone;
-        userData.role = user.Role;
-        userData.id = user.Id;
-        userData.email = user.Email;
-        userData.accessToken = this.generateAccessToken(user.Id);
+        userData.firstName = user.firstName;
+        userData.lastName = user.lastName;
+        userData.userName = user.userName;
+        userData.phone = user.phone;
+        userData.role = user.role;
+        userData.id = user.id;
+        userData.email = user.email;
+        userData.accessToken = this.generateAccessToken(user.id);
         return userData;
       }
     }
     return null;
+  }
+
+  async getUser() {
+    return await this.userRepository.find();
   }
 }

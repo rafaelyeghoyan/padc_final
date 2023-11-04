@@ -1,0 +1,13 @@
+[
+  {
+    "name": "default",
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "postgres",
+    "password": "root",
+    "database": "padc_final",
+    "synchronize": true,
+    "entities": ["/**/*.entity{.ts,.js}"]
+  }
+]
