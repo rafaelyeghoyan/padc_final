@@ -6,12 +6,17 @@ import { LoginData } from './dto/login-user-dto';
 import * as jwt from 'jsonwebtoken';
 import { User } from '../../../output/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Task } from '../../../output/entities/task.entity';
+import * as process from 'process';
+import { SECRET_KEY } from '../../../secretKey';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Task)
+    private taskRepository: Repository<Task>,
   ) {}
 
   async hashedPassword(password: string) {
@@ -25,9 +30,9 @@ export class UserService {
     const newUser = this.userRepository.create(dto);
     return this.userRepository.save(newUser);
   }
+
   generateAccessToken(payload: any): string {
-    const secretKey =
-      '00228eaad7bd7ead49b4a66f5ea4681146e970ec008d0b4dcaeccf36432599db';
+    const secretKey = SECRET_KEY;
     return jwt.sign(payload, secretKey);
   }
 
@@ -51,6 +56,21 @@ export class UserService {
         userData.id = user.id;
         userData.email = user.email;
         userData.accessToken = this.generateAccessToken(user.id);
+        if (userData.role === 'admin') {
+          userData.userTasks = await this.taskRepository.find();
+        }
+        if (userData.role === 'user') {
+          const allTasks: Task[] = await this.taskRepository.findBy({
+            userId: userData.id,
+          });
+          const actulatTasks = [];
+          allTasks.forEach((item) => {
+            if (item.isActive) {
+              actulatTasks.push(item);
+            }
+          });
+          userData.userTasks = actulatTasks;
+        }
         return userData;
       }
     }

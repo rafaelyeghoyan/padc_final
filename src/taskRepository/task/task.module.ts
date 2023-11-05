@@ -4,11 +4,12 @@ import { TaskController } from './task.controller';
 import { Task } from '../../../output/entities/task.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthMiddleware } from '../../middlewares/auth.middleware';
+import { User } from '../../../output/entities/user.entity';
 
 @Module({
-  imports: [Task, TypeOrmModule.forFeature([Task])],
+  imports: [Task, TypeOrmModule.forFeature([Task, User])],
   controllers: [TaskController],
-  providers: [TaskService, Task],
+  providers: [TaskService, Task, User],
   exports: [Task],
 })
 export class TaskModule {

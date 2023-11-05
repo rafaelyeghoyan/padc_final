@@ -1,3 +1,5 @@
+import { TaskDto } from '../../../taskRepository/task/dto/create-task.dto';
+
 export class UserData {
   firstName: string;
   lastName: string;
@@ -7,4 +9,5 @@ export class UserData {
   email: string;
   id: number;
   accessToken: string;
+  userTasks: TaskDto[];
 }
