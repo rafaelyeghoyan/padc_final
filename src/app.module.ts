@@ -10,6 +10,7 @@ import { TaskController } from './taskRepository/task/task.controller';
 import { User } from '../output/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Task } from '../output/entities/task.entity';
+import { ConfigModule } from "@nestjs/config";
 @Module({
   imports: [
     UserModule,
@@ -27,6 +28,7 @@ import { Task } from '../output/entities/task.entity';
       synchronize: false,
     }),
     TypeOrmModule.forFeature([User, Task]),
+    ConfigModule.forRoot(),
   ],
   controllers: [AppController, UserController, TaskController],
   providers: [AppService, UserService, TaskService],

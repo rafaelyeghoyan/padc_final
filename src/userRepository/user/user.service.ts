@@ -8,7 +8,6 @@ import { User } from '../../../output/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from '../../../output/entities/task.entity';
 import * as process from 'process';
-import { SECRET_KEY } from '../../../secretKey';
 
 @Injectable()
 export class UserService {
@@ -32,7 +31,7 @@ export class UserService {
   }
 
   generateAccessToken(payload: any): string {
-    const secretKey = SECRET_KEY;
+    const secretKey = process.env.SECRET_KEY;
     return jwt.sign(payload, secretKey);
   }
 
