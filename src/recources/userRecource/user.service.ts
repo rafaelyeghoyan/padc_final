@@ -36,16 +36,16 @@ export class UserService {
   }
 
   async loginUser(loginDto: LoginData) {
-    if (!loginDto.Email && !loginDto.Password) {
+    if (!loginDto.email && !loginDto.password) {
       return null;
     }
     if (loginDto) {
       const user = await this.userRepository.findOne({
         where: {
-          email: loginDto.Email,
+          email: loginDto.email,
         },
       });
-      if (user && (await bcrypt.compare(loginDto.Password, user.password))) {
+      if (user && (await bcrypt.compare(loginDto.password, user.password))) {
         const userData: UserData = new UserData();
         userData.firstName = user.firstName;
         userData.lastName = user.lastName;
