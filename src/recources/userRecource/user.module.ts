@@ -5,8 +5,9 @@ import { User } from '../../../output/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthMiddleware } from '../../middlewares/auth.middleware';
 import { Task } from '../../../output/entities/task.entity';
+import { TaskModule } from '../taskResource/task.module';
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Task])],
+  imports: [TypeOrmModule.forFeature([User, Task]), TaskModule],
   controllers: [UserController],
   providers: [UserService, User, Task],
   exports: [User],

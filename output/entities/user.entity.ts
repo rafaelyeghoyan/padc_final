@@ -26,6 +26,6 @@ export class User {
   @Column('boolean', { name: 'isActive', default: () => 'true' })
   isActive: boolean;
 
-  @Column('character varying', { name: 'Role', default: () => "'user'" })
+  @Column('character varying', { name: 'Role', default: () => "'userRecource'" })
   role: string;
 }

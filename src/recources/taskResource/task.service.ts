@@ -16,7 +16,7 @@ export class TaskService {
   ) {}
 
   async getTasks() {
-    return await this.taskRepository.find();
+    return await this.taskRepository.findBy({ isActive: true });
   }
 
   async createTask(dto: TaskDto, id: number) {
@@ -25,7 +25,7 @@ export class TaskService {
       dto.userId = user[0].id;
       return this.taskRepository.create(dto);
     }
-    return 'user was not logined';
+    return 'userRecource was not logined';
   }
 
   async deleteTask(id: number) {
@@ -36,19 +36,25 @@ export class TaskService {
   }
 
   async updateTas(id: number, dto: UpdateTaskDto) {
-    const updatedTask: Task = await this.taskRepository.findOne({
-      where: { id: id },
-    });
+    return this.taskRepository.update(id, dto);
 
-    if (updatedTask) {
-      updatedTask.content = dto.content;
-      updatedTask.dueDate = dto.dueDate;
-      updatedTask.title = dto.title;
+    // const updatedTask: Task = await this.taskRepository.findOne({
+    //   where: { id: id },
+    // });
+    //
+    // if (updatedTask) {
+    //   updatedTask.content = dto.content;
+    //   updatedTask.dueDate = dto.dueDate;
+    //   updatedTask.title = dto.title;
+    //
+    //   return await this.taskRepository.save(updatedTask); // Save the updated taskResource
+    // } else {
+    //   // If the taskResource doesn't exist
+    //   throw new Error('Task not found');
+    // }
+  }
 
-      return await this.taskRepository.save(updatedTask); // Save the updated task
-    } else {
-      // If the task doesn't exist
-      throw new Error('Task not found');
-    }
+  async getUserTasks(userId: number) {
+    return await this.taskRepository.findBy({ userId: userId, isActive: true });
   }
 }

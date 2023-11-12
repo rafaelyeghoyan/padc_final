@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserData } from './dto/logined-user-data';
@@ -8,14 +8,15 @@ import { User } from '../../../output/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from '../../../output/entities/task.entity';
 import * as process from 'process';
+import { TaskService } from '../taskResource/task.service';
+import { validate } from 'class-validator';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(Task)
-    private taskRepository: Repository<Task>,
+    private readonly taskService: TaskService,
   ) {}
 
   async hashedPassword(password: string) {
@@ -25,11 +26,10 @@ export class UserService {
   }
 
   async registrationUser(dto) {
-    dto.Password = await this.hashedPassword(dto.Password);
+    dto.password = await this.hashedPassword(dto.password);
     const newUser = this.userRepository.create(dto);
     return this.userRepository.save(newUser);
   }
-
   generateAccessToken(payload: any): string {
     const secretKey = process.env.SECRET_KEY;
     return jwt.sign(payload, secretKey);
@@ -56,19 +56,10 @@ export class UserService {
         userData.email = user.email;
         userData.accessToken = this.generateAccessToken(user.id);
         if (userData.role === 'admin') {
-          userData.userTasks = await this.taskRepository.find();
+          userData.userTasks = await this.taskService.getTasks();
         }
         if (userData.role === 'user') {
-          const allTasks: Task[] = await this.taskRepository.findBy({
-            userId: userData.id,
-          });
-          const actulatTasks = [];
-          allTasks.forEach((item) => {
-            if (item.isActive) {
-              actulatTasks.push(item);
-            }
-          });
-          userData.userTasks = actulatTasks;
+          userData.userTasks = await this.taskService.getUserTasks(userData.id);
         }
         return userData;
       }
@@ -78,5 +69,20 @@ export class UserService {
 
   async getUser() {
     return await this.userRepository.find();
+  }
+
+  async getUserTaskCount(id: number) {
+    const userTasks: Task[] = [];
+    await this.taskService.getTasks().then((item) => {
+      item.forEach((tasksInfo) => {
+        if (tasksInfo.userId === id && tasksInfo.isActive === true) {
+          userTasks.push(tasksInfo);
+        }
+      });
+    });
+    return {
+      user_id: id,
+      task_cunt: userTasks.length,
+    };
   }
 }

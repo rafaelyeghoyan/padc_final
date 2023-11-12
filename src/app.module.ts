@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './userRepository/user/user.module';
-import { UserService } from './userRepository/user/user.service';
-import { UserController } from './userRepository/user/user.controller';
-import { TaskModule } from './taskRepository/task/task.module';
-import { TaskService } from './taskRepository/task/task.service';
-import { TaskController } from './taskRepository/task/task.controller';
+import { UserModule } from './recources/userRecource/user.module';
+import { UserService } from './recources/userRecource/user.service';
+import { UserController } from './recources/userRecource/user.controller';
+import { TaskModule } from './recources/taskResource/task.module';
+import { TaskService } from './recources/taskResource/task.service';
+import { TaskController } from './recources/taskResource/task.controller';
 import { User } from '../output/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Task } from '../output/entities/task.entity';
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     UserModule,
@@ -28,7 +28,9 @@ import { ConfigModule } from "@nestjs/config";
       synchronize: false,
     }),
     TypeOrmModule.forFeature([User, Task]),
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
   ],
   controllers: [AppController, UserController, TaskController],
   providers: [AppService, UserService, TaskService],

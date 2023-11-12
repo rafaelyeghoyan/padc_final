@@ -1,28 +1,32 @@
-import { IsString, Matches, Min } from 'class-validator';
+import { IsString, Matches, MinLength } from 'class-validator';
 
 export class CreateUserDto {
-  @Min(3)
   @IsString()
-  FirstName: string;
-  @Min(3)
+  firstName: string;
+
+  @MinLength(3)
   @IsString()
-  LastName: string;
-  @Min(5)
+  lastName: string;
+
+  @MinLength(5)
   @IsString()
-  UserName: string;
-  @Min(12)
+  userName: string;
+
+  @MinLength(9)
   @IsString()
-  Phone: string;
+  phone: string;
+
   @IsString()
   @Matches(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}$/i, {
     message: 'Invalid email format',
   })
-  Email: string;
-  @Min(8)
+  email: string;
+
+  @MinLength(8)
   @Matches(/^(?=.*[A-Z])(?=.*\d).{8,}$/, {
     message:
       'Password length must be at least 8 characters. Password should contain at least one uppercase letter and one number.',
   })
   @IsString()
-  Password: string;
+  password: string;
 }

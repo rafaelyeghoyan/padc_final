@@ -1,4 +1,4 @@
-import { TaskDto } from '../../../taskRepository/task/dto/create-task.dto';
+import { TaskDto } from '../../taskResource/dto/create-task.dto';
 
 export class UserData {
   firstName: string;
