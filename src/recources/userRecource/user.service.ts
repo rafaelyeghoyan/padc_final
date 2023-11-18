@@ -10,6 +10,8 @@ import { Task } from '../../../output/entities/task.entity';
 import * as process from 'process';
 import { TaskService } from '../taskResource/task.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserRole } from '../../../output/entities/user.entity';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -70,11 +72,11 @@ export class UserService {
         userData.id = user.id;
         userData.email = user.email;
         userData.accessToken = this.generateAccessToken(user.id);
-        if (userData.role === 'admin') {
+        if (userData.role === UserRole.Admin) {
           userData.userTasks = await this.taskService.getTasks();
           userData.accessToken += '1';
         }
-        if (userData.role === 'user') {
+        if (userData.role === UserRole.User) {
           userData.userTasks = await this.taskService.getUserTasks(userData.id);
           userData.accessToken += '2';
         }
