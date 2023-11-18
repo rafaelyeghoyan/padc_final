@@ -6,7 +6,6 @@ import { LoginData } from './dto/login-user-dto';
 import * as jwt from 'jsonwebtoken';
 import { User } from '../../../output/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Task } from '../../../output/entities/task.entity';
 import * as process from 'process';
 import { TaskService } from '../taskResource/task.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -84,20 +83,5 @@ export class UserService {
       }
     }
     throw new ConflictException('The email or password is incorrect');
-  }
-
-  async getUserTaskCount(id: number) {
-    const userTasks: Task[] = [];
-    await this.taskService.getTasks().then((item: Task[]) => {
-      item.forEach((tasksInfo: Task) => {
-        if (tasksInfo.userId === id && tasksInfo.isActive === true) {
-          userTasks.push(tasksInfo);
-        }
-      });
-    });
-    return {
-      user_id: id,
-      task_cunt: userTasks.length,
-    };
   }
 }

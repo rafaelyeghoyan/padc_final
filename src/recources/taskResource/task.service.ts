@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { User } from '../../../output/entities/user.entity';
-import { request } from 'express';
 
 @Injectable()
 export class TaskService {
@@ -34,7 +33,7 @@ export class TaskService {
     const deletedTask: Task = await this.taskRepository.findOneBy({ id: id });
     deletedTask.isActive = false;
     await this.taskRepository.save(deletedTask);
-    return request.statusCode;
+    return { statusCode: 200 };
   }
 
   async updateTask(id: number, dto: UpdateTaskDto) {
