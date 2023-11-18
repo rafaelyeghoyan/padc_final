@@ -2,7 +2,8 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginData } from './dto/login-user-dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('User API')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -14,10 +15,6 @@ export class UserController {
 
   @Post('login')
   async loginUser(@Body() dto: LoginData) {
-    const loginedUser = await this.userService.loginUser(dto);
-    if (loginedUser) {
-      return loginedUser;
-    }
-    return 'The userRecource was not founded';
+    return this.userService.loginUser(dto);
   }
 }

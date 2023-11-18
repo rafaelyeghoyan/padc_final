@@ -1,5 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
+export enum UserRole {
+  User = 'user',
+  Admin = 'admin',
+}
 @Entity('User', { schema: 'public' })
 export class User {
   @PrimaryGeneratedColumn({ type: 'integer', name: 'Id' })
@@ -26,6 +29,9 @@ export class User {
   @Column('boolean', { name: 'isActive', default: () => 'true' })
   isActive: boolean;
 
-  @Column('character varying', { name: 'Role', default: () => "'userRecource'" })
+  @Column('character varying', {
+    name: 'Role',
+    default: UserRole.User,
+  })
   role: string;
 }

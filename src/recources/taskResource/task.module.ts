@@ -13,7 +13,7 @@ import { User } from '../../../output/entities/user.entity';
   exports: [Task, TaskService],
 })
 export class TaskModule {
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer.apply(AuthMiddleware).forRoutes(TaskController);
-  // }
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes(TaskController);
+  }
 }
