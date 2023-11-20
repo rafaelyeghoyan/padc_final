@@ -1,10 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Task } from '../../../output/entities/task.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { User } from '../../../output/entities/user.entity';
+import { FilterTaskDto } from './dto/filter-task.dto';
 
 @Injectable()
 export class TaskService {
@@ -13,7 +14,8 @@ export class TaskService {
     private taskRepository: Repository<Task>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {}
+  ) {
+  }
 
   async getTasks() {
     return await this.taskRepository.findBy({ isActive: true });
@@ -42,5 +44,21 @@ export class TaskService {
 
   async getUserTasks(userId: number) {
     return await this.taskRepository.findBy({ userId: userId, isActive: true });
+  }
+
+  async filterTask(dto: FilterTaskDto) {
+    if (dto.dueDate) {
+      const filterTask: Task[] = await this.taskRepository.findBy({
+        dueDate: dto.dueDate,
+      });
+      return filterTask;
+    }
+    if (dto.isActive) {
+      const filterTask: Task[] = await this.taskRepository.findBy({
+        isActive: dto.isActive,
+      });
+      return filterTask;
+    }
+    throw new ConflictException('data is empty');
   }
 }
