@@ -44,7 +44,7 @@ export class UserService {
   }
   generateAccessToken(payload: any): string {
     const secretKey = process.env.SECRET_KEY;
-    return jwt.sign(payload, secretKey);
+    return jwt.sign(payload, secretKey, { expiresIn: '2h' });
   }
 
   async loginUser(loginDto: LoginData) {

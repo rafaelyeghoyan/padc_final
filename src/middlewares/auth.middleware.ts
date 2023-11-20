@@ -5,6 +5,8 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
+import * as jwt from 'jsonwebtoken';
+import * as process from 'process';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -25,6 +27,8 @@ export class AuthMiddleware implements NestMiddleware {
     }
 
     try {
+      const decodeUser = jwt.verify(token, process.env.SECRET_KEY);
+      req['user'] = decodeUser;
       next();
     } catch (error) {
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
