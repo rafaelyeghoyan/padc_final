@@ -10,6 +10,7 @@ import * as process from 'process';
 import { TaskService } from '../taskResource/task.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRole } from '../../../output/entities/user.entity';
+import { Request} from 'express';
 
 @Injectable()
 export class UserService {
@@ -42,13 +43,18 @@ export class UserService {
     const newUser = this.userRepository.create(dto);
     return this.userRepository.save(newUser);
   }
-  generateAccessToken(payload: any): string {
+  generateAccessToken(payload: {id: number, role: string, userName: string}): string {
     const secretKey = process.env.SECRET_KEY;
-    console.log('secretKey',secretKey);
-    const token = jwt.sign({ id: payload }, secretKey, { expiresIn: '2h' });
-
-    console.log('token',token);
+    const token = jwt.sign(payload, secretKey, { expiresIn: '2h' });
     return token;
+  }
+  async getUserTasks(role: string, id?:number){
+    if(role === UserRole.Admin){
+      return this.taskService.getTasks()
+    }
+    if(role === UserRole.User && id){
+      return this.taskService.getUserTasks(id)
+    }
   }
 
   async loginUser(loginDto: LoginData) {
@@ -74,15 +80,8 @@ export class UserService {
         userData.role = user.role;
         userData.id = user.id;
         userData.email = user.email;
-        userData.accessToken = this.generateAccessToken(user.id);
-        if (userData.role === UserRole.Admin) {
-          userData.userTasks = await this.taskService.getTasks();
-          // userData.accessToken += '1';
-        }
-        if (userData.role === UserRole.User) {
-          userData.userTasks = await this.taskService.getUserTasks(userData.id);
-          // userData.accessToken += '2';
-        }
+        userData.accessToken = this.generateAccessToken({ id: user.id, role: user.role, userName: user.userName});
+        userData.userTasks = await this.getUserTasks(userData.role, userData.id)
         return userData;
       }
     }

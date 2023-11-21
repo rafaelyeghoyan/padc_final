@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsString, Matches } from 'class-validator';
+import { IsDateFormat } from '../../../decorators';
 
 export class FilterTaskDto {
 
   @ApiProperty()
   @IsString()
-  @Matches(/^\d{2}-\d{2}-\d{4}$/, {
-    message: 'The date format is incorrect. Please correct it to DD-MM-YYYY',
+  @IsDateFormat('yyyy-mm-dd', {
+    message: 'Invalid Date Format',
   })
   dueDate?: Date;
   @ApiProperty()

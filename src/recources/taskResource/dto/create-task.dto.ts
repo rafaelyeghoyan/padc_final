@@ -13,9 +13,9 @@ export class TaskDto {
   @IsString()
   content: string;
 
-  @IsDateFormat('MM/dd/yyyy', {
+  @ApiProperty()
+  @IsDateFormat('yyyy-mm-dd', {
     message: 'Invalid Date Format',
   })
-  @ApiProperty()
   dueDate: Date;
 }

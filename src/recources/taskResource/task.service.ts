@@ -6,6 +6,7 @@ import { TaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { User } from '../../../output/entities/user.entity';
 import { FilterTaskDto } from './dto/filter-task.dto';
+import { log } from 'console';
 
 @Injectable()
 export class TaskService {
@@ -21,14 +22,10 @@ export class TaskService {
     return await this.taskRepository.findBy({ isActive: true });
   }
 
-  async createTask(dto: TaskDto, id: number) {
-    const user: User = await this.userRepository.findOneBy({ id: id });
-    if (user) {
+  async createTask(dto: TaskDto, user) {
       dto['userId'] = user.id;
       const creatTask: Task = await this.taskRepository.create(dto);
       return this.taskRepository.save(creatTask);
-    }
-    throw new UnauthorizedException('User was not logged in');
   }
 
   async deleteTask(id: number) {

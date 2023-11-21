@@ -24,9 +24,8 @@ export class TaskController {
   }
 
   @Post('create')
-  async createTasks(@Body() dto: TaskDto, @Param('id') id: string, @AuthUser() user) {
-    const Id: number = Number(user.id);
-    return this.taskService.createTask(dto, Id);
+  async createTasks(@Body() dto: TaskDto, @AuthUser() user) {
+    return this.taskService.createTask(dto, user);
   }
 
   @Post('search')
