@@ -25,7 +25,7 @@ import { ConfigModule } from '@nestjs/config';
       password: 'root',
       database: 'padc_final',
       entities: [User, Task],
-      synchronize: false,
+      synchronize: true,
     }),
     TypeOrmModule.forFeature([User, Task]),
     ConfigModule.forRoot({

@@ -8,7 +8,7 @@ export class FilterTaskDto {
   @Matches(/^\d{2}-\d{2}-\d{4}$/, {
     message: 'The date format is incorrect. Please correct it to DD-MM-YYYY',
   })
-  dueDate?: string;
+  dueDate?: Date;
   @ApiProperty()
   @IsBoolean()
   isActive?: boolean;

@@ -6,11 +6,13 @@ import {
   Param,
   Put,
   Delete,
+  Request
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { TaskDto } from './dto/create-task.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { FilterTaskDto } from './dto/filter-task.dto';
+import { AuthUser } from '../../decorators';
 @ApiTags('Task API')
 @Controller('task')
 export class TaskController {
@@ -21,9 +23,9 @@ export class TaskController {
     return this.taskService.getTasks();
   }
 
-  @Post('create:id')
-  async createTasks(@Body() dto: TaskDto, @Param('id') id: string) {
-    const Id: number = Number(id.slice(1));
+  @Post('create')
+  async createTasks(@Body() dto: TaskDto, @Param('id') id: string, @AuthUser() user) {
+    const Id: number = Number(user.id);
     return this.taskService.createTask(dto, Id);
   }
 

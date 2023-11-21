@@ -44,7 +44,11 @@ export class UserService {
   }
   generateAccessToken(payload: any): string {
     const secretKey = process.env.SECRET_KEY;
-    return jwt.sign(payload, secretKey, { expiresIn: '2h' });
+    console.log('secretKey',secretKey);
+    const token = jwt.sign({ id: payload }, secretKey, { expiresIn: '2h' });
+
+    console.log('token',token);
+    return token;
   }
 
   async loginUser(loginDto: LoginData) {
@@ -73,11 +77,11 @@ export class UserService {
         userData.accessToken = this.generateAccessToken(user.id);
         if (userData.role === UserRole.Admin) {
           userData.userTasks = await this.taskService.getTasks();
-          userData.accessToken += '1';
+          // userData.accessToken += '1';
         }
         if (userData.role === UserRole.User) {
           userData.userTasks = await this.taskService.getUserTasks(userData.id);
-          userData.accessToken += '2';
+          // userData.accessToken += '2';
         }
         return userData;
       }

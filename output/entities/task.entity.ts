@@ -11,8 +11,8 @@ export class Task {
   @Column('character varying', { name: 'Content' })
   content: string;
 
-  @Column('character varying', { name: 'DueDate' })
-  dueDate: string;
+  @Column('date', { name: 'DueDate' })
+  dueDate: Date;
 
   @Column('boolean', { name: 'isActive', default: () => 'true' })
   isActive: boolean;
